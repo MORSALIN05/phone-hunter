@@ -2,19 +2,18 @@ const loadPhones = async (searchText) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
     const res = await fetch(url);
     const data = await res.json();
-    displayPhones(data.data);
+    displayPhones(data.data, searchText);
 }
 const divContainer = document.getElementById('phone-container');
-const displayPhones = phones => {
+const displayPhones = (phones, searchText) => {
     //console.log(typeof (phones));
     //console.log(phones);
     // if no phone fuond
     const noPhoneFound = document.getElementById('no-phone-found');
-    if (phones.length === 0) {
-        noPhoneFound.classList.remove('d-none');
-    }
-    else {
-        noPhoneFound.classList.add('d-none');
+    if (phones.length === 0 && searchText.length !== 0) {
+        noPhoneFound.innerHTML = `<h3 class="text-warning">No Phone found ,pls! another search</h3>`
+    } else {
+        noPhoneFound.innerHTML = ``
     }
     phones = phones.slice(0, 20);
     phones.forEach(phone => {
