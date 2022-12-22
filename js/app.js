@@ -1,12 +1,11 @@
-const loadPhones = async (searchText) => {
+const loadPhones = async (searchText, dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
     const res = await fetch(url);
     const data = await res.json();
-    displayPhones(data.data, searchText);
+    displayPhones(data.data, dataLimit);
 }
 const divContainer = document.getElementById('phone-container');
-const displayPhones = (phones, searchText) => {
-    //console.log(typeof (phones));
+const displayPhones = (phones, dataLimit) => {
     //console.log(phones);
     // if no phone fuond
     const noPhoneFound = document.getElementById('no-phone-found');
@@ -15,10 +14,18 @@ const displayPhones = (phones, searchText) => {
     } else {
         noPhoneFound.classList.add('d-none');
     }
-    phones = phones.slice(0, 3);
+    // display 10 phones only
+    const showAll = document.getElementById('show-all');
+    if (dataLimit && phones.length > 10) {
+        phones = phones.slice(0, 10);
+        showAll.classList.remove('d-none');
+    }
+    else {
+        showAll.classList.add('d-none');
+    }
+    // show all phone in a div by append child
     phones.forEach(phone => {
         const div = document.createElement('div');
-
         div.classList.add('col');
         div.innerHTML = `
         <div class="card p-4">
@@ -36,14 +43,18 @@ const displayPhones = (phones, searchText) => {
 
 }
 divContainer.textContent = '';
-document.getElementById('btn-search').addEventListener('click', function () {
+
+const processSearch = (dataLimit) => {
     spinnerDisplay(true);
     const searchField = document.getElementById('search-field');
-
+    //get the value of search field
     const searchText = searchField.value;
-    loadPhones(searchText);
+    loadPhones(searchText, dataLimit);
     divContainer.textContent = '';
-
+}
+// handle search button click
+document.getElementById('btn-search').addEventListener('click', function () {
+    processSearch(10);
 })
 
 loadPhones();
@@ -57,3 +68,10 @@ const spinnerDisplay = (isLoading) => {
         spinnerWorking.classList.add('d-none');
     }
 }
+
+// show the other phone from ten to end
+document.getElementById('show-all').addEventListener('click', function () {
+
+    processSearch();
+    spinnerDisplay(false);
+})
