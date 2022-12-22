@@ -10,12 +10,12 @@ const displayPhones = (phones, searchText) => {
     //console.log(phones);
     // if no phone fuond
     const noPhoneFound = document.getElementById('no-phone-found');
-    if (phones.length === 0 && searchText.length !== 0) {
-        noPhoneFound.innerHTML = `<h3 class="text-warning">No Phone found ,pls! another search</h3>`
+    if (phones.length === 0) {
+        noPhoneFound.classList.remove('d-none');
     } else {
-        noPhoneFound.innerHTML = ``
+        noPhoneFound.classList.add('d-none');
     }
-    phones = phones.slice(0, 20);
+    phones = phones.slice(0, 3);
     phones.forEach(phone => {
         const div = document.createElement('div');
 
