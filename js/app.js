@@ -35,6 +35,8 @@ const displayPhones = (phones, dataLimit) => {
             <p class="card-text">This is a longer card with supporting text below as a natural
                 lead-in
                 to additional content. This content is a little bit longer.</p>
+            <button onclick = "loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Show Details</button>
+
         </div>
         `;
         divContainer.appendChild(div);
@@ -57,7 +59,16 @@ document.getElementById('btn-search').addEventListener('click', function () {
     processSearch(10);
 })
 
-loadPhones();
+// handle search button by press Enter key
+document.getElementById('search-field').addEventListener('keypress', function (e) {
+    console.log(e.key);
+    if (e.key === 'Enter') {
+        //code here
+        processSearch(10);
+    }
+})
+
+loadPhones('apple');
 // spin loader function
 const spinnerDisplay = (isLoading) => {
     const spinnerWorking = document.getElementById('spin-loader');
@@ -75,3 +86,21 @@ document.getElementById('show-all').addEventListener('click', function () {
     processSearch();
     spinnerDisplay(false);
 })
+const loadPhoneDetails = async (searchText) => {
+    const url = `https://openapi.programming-hero.com/api/phone/${searchText}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log('data show', data.data);
+    displayPhoneDetails(data.data);
+}
+
+const displayPhoneDetails = (phone) => {
+    const phoneName = document.getElementById('exampleModalLabel');
+    const phoneTitle = phone.name;
+    phoneName.innerText = phoneTitle;
+    const phoneDetails = document.getElementById('phone-details');
+    phoneDetails.innerHTML = `
+        <p>${phone.releaseDate ? phone.releaseDate : 'No Release Date'}<p/>
+    `
+}
+
